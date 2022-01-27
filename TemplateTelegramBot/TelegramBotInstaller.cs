@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TemplateTelegramBot
+{
+    public class TelegramBotInstaller
+    {
+        private readonly string _token;
+        private readonly IExeptionLogger _exceptionPusher;
+        private event IExeptionLogger.ExceptionPusherCallback pushException;
+
+        public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger)
+        {
+            _token = token;
+            _exceptionPusher = exeptionLogger;
+            pushException = _exceptionPusher.PushException;
+        }
+
+        public void Start(string? webhook = default, int errorTimeout = 120)
+        {
+            TelegramBotClient client;
+            while (true)
+            {
+                try
+                {
+                    client = new TelegramBotClient(_token);
+                    client.SetWebhookAsync(webhook ?? string.Empty);
+
+                }
+                catch (Exception ex)
+                {
+                    ExceptionData exceptionData = new ExceptionData
+                    {
+                        CurrentMethod = ex.TargetSite?.Name,
+                        DateTime = DateTime.Now,
+                        Message = ex.Message,
+                        StackTrace = ex.StackTrace
+                    };
+                    pushException.Invoke(exceptionData);
+                }
+                finally
+                {
+                    Thread.Sleep(errorTimeout * 1000);
+                }
+            }
+        }
+    }
+}
