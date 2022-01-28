@@ -19,7 +19,7 @@ namespace TemplateTelegramBot
             pushException = _exceptionPusher.PushException;
         }
 
-        public void Start(string? webhook = default, int errorTimeout = 120)
+        public void Start( string? webhook = default, int errorTimeout = 120)
         {
             TelegramBotClient client;
             while (true)
