@@ -8,28 +8,40 @@ namespace TemplateTelegramBot
 {
     public static class LastUsersCommands
     {
-        private static Dictionary<string, string>? _lastUsersCommand;
-        public static Dictionary<string, string> LastUsersCommand
+        private static Dictionary<long, string>? _lastUsersCommand;
+        private static Dictionary<long, string> lastUsersCommand
         {
             get
             {
                 if (_lastUsersCommand == null)
                 {
-                    _lastUsersCommand = new Dictionary<string, string>();
+                    _lastUsersCommand = new Dictionary<long, string>();
                 }
                 return _lastUsersCommand;
             }
         }
 
-        public static void UpdateLastCommand(string id, string action)
+        public static void UpdateLastCommand(long id, string action)
         {
-            if(LastUsersCommand.ContainsKey(id))
+            if(lastUsersCommand.ContainsKey(id))
             {
-                LastUsersCommand[id] = action;
+                lastUsersCommand[id] = action;
             }
             else
             {
-                LastUsersCommand.Add(id, action);
+                lastUsersCommand.Add(id, action);
+            }
+        }
+
+        public static string GetLastCommand(long id)
+        {
+            if (lastUsersCommand.ContainsKey(id))
+            {
+                return lastUsersCommand[id];
+            }
+            else
+            {
+                return string.Empty;
             }
         }
 

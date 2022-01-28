@@ -8,7 +8,6 @@ namespace TemplateTelegramBot.Log
 {
     public class ExceptionData
     {
-        private string? test { get; set; }
         public DateTime DateTime { get; set; }
         public string? Message { get; set; }
         public string? CurrentMethod { get; set; }
