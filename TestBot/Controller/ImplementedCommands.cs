@@ -8,7 +8,7 @@ namespace TestBot.Controller
 {
     internal class ImplementedCommands : IImplementedCommands
     {
-        public Dictionary<string, IImplementedCommands.CommandUse>? Commands { get; }
+        public Dictionary<string, IImplementedCommands.CommandUse> Commands { get; }
 
         internal ImplementedCommands()
         {
@@ -18,7 +18,7 @@ namespace TestBot.Controller
 
         private async Task StartBot(Update update, TelegramBotClient client)
         {
-            await client.SendTextMessageAsync(update.Message.Chat.Id, "Запущен");
+            await client.SendTextMessageAsync(update.Message.Chat.Id, "Введите свое имя");
         }
     }
 }

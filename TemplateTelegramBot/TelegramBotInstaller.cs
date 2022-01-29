@@ -19,7 +19,7 @@ namespace TemplateTelegramBot
             pushException = _exceptionPusher.PushException;
         }
 
-        public async Task Start(IImplementedCommands commandUse, bool answerAll = true, string? webhook = default, int errorTimeout = 120)
+        public async Task Start(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll = true, string? webhook = default, int errorTimeout = 120)
         {
             TelegramBotClient client;
             while (true)
@@ -28,7 +28,7 @@ namespace TemplateTelegramBot
                 {
                     client = new TelegramBotClient(_token);
                     await client.SetWebhookAsync(webhook ?? string.Empty);
-                    ControllerTelegramBot controllerTelegramBot = new(commandUse, client, _exceptionPusher);
+                    ControllerTelegramBot controllerTelegramBot = new(implementedCommand, implementedActions, standardActions, answerAll, client, _exceptionPusher);
                     await controllerTelegramBot.Start();
 
                 }

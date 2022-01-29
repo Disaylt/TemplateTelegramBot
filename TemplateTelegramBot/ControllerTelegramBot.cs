@@ -10,41 +10,60 @@ namespace TemplateTelegramBot
     {
         private readonly TelegramBotClient _client;
         private readonly Dictionary<string, IImplementedCommands.CommandUse> _commands;
+        private readonly Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction> _actions;
+        private readonly IStandardActions _standardActions;
         private readonly int _timeout;
         private readonly bool _answerAll;
         private int _offset;
         private event IExeptionLogger.ExceptionPusherCallback pushException;
 
-        internal ControllerTelegramBot(IImplementedCommands commandUse, bool answerAll, TelegramBotClient client, IExeptionLogger exeptionLogger)
+        internal ControllerTelegramBot(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll, TelegramBotClient client, IExeptionLogger exeptionLogger)
         {
             _client = client;
             _timeout = 1000;
             _answerAll = answerAll;
             pushException = exeptionLogger.PushException;
-            _commands = commandUse.Commands ?? new Dictionary<string, IImplementedCommands.CommandUse>();
+            _commands = implementedCommand.Commands ?? new Dictionary<string, IImplementedCommands.CommandUse>();
+            _actions = implementedActions.Actions ?? new Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction>();
+            _standardActions = standardActions;
         }
 
-        private void UpdateHandling(Update update, long userId)
+        private async Task UpdateHandling(Update update, long userId)
         {
             string messageText = update.Message?.Text ?? string.Empty;
-            long userId = update.Message?.Chat.Id ?? default;
             if(_commands.ContainsKey(messageText))
             {
-                LastUsersCommands.UpdateLastCommand(userId, messageText);
-                _commands[messageText].Invoke(update, _client);
+                LastUsersActions.UpdateLastCommand(userId, messageText);
+                await _commands[messageText].Invoke(update, _client);
             }
             else
             {
-
+                string lastUserAction = LastUsersActions.GetLastCommand(userId);
+                if(_actions.ContainsKey(lastUserAction))
+                {
+                    string nextAction = await _actions[lastUserAction].Invoke(update, _client);
+                    LastUsersActions.UpdateLastCommand(userId, nextAction);
+                }
+                else
+                {
+                    await _standardActions.CommandNotFoundd(update, _client);
+                }
             }
         }
 
-        private void ReadUpdates(Update[] updates)
+        private async Task ReadUpdates(Update[] updates)
         {
             foreach (var update in updates)
             {
-                if(_answerAll || )
-                UpdateHandling(update);
+                long userId = update.Message?.Chat.Id ?? default;
+                if (_answerAll || UsersStorage.UsersData.Find(x=> x.Id == userId) != null)
+                {
+                    await UpdateHandling(update, userId);
+                }
+                else
+                {
+                    await _standardActions.UserNotFound(update, _client);
+                }
                 _offset = update.Id + 1;
             }
         }
@@ -56,7 +75,7 @@ namespace TemplateTelegramBot
                 while (true)
                 {
                     var updates = await _client.GetUpdatesAsync(_offset, timeout: _timeout);
-                    ReadUpdates(updates);
+                    await ReadUpdates(updates);
                 }
             }
             catch (Exception ex)

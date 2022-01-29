@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot
 {
-    public static class LastUsersCommands
+    public static class LastUsersActions
     {
         private static Dictionary<long, string>? _lastUsersCommand;
         private static Dictionary<long, string> lastUsersCommand

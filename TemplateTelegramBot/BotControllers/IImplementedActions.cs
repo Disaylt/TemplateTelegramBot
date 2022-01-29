@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot.BotControllers
 {
-    internal interface IImplementedActions
+    public interface IImplementedActions
     {
         public delegate Task<string> ReturnNextActionAndUseAction(Update update, TelegramBotClient client);
-        public Dictionary<string, ReturnNextActionAndUseAction>? Commands { get; }
+        public Dictionary<string, ReturnNextActionAndUseAction>? Actions { get; }
     }
 }

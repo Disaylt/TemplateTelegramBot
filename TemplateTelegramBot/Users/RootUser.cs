@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TemplateTelegramBot.UsersController
+namespace TemplateTelegramBot.Users
 {
     public abstract class RootUser
     {
-
         public long Id { get; set; }
     }
 }
