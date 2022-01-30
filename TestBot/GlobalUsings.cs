@@ -1,7 +1,11 @@
 ﻿global using TemplateTelegramBot;
 global using TemplateTelegramBot.Log;
+global using TemplateTelegramBot.Users;
 global using TemplateTelegramBot.BotControllers;
 global using TestBot;
 global using TestBot.Controller;
+global using TestBot.Model.Users;
+global using Telegram.Bot.Types.ReplyMarkups;
 global using Telegram.Bot.Types;
 global using Telegram.Bot;
+global using ClosedXML.Excel;

@@ -17,6 +17,13 @@ namespace TemplateTelegramBot
             _token = token;
             _exceptionPusher = exeptionLogger;
             pushException = _exceptionPusher.PushException;
+            ConnectToUsersStorage(exeptionLogger);
+        }
+
+        private void ConnectToUsersStorage(IExeptionLogger exeptionLogger)
+        {
+            UsersStorage.ExceptionPusher = exeptionLogger;
+            UsersStorage.PushException += UsersStorage.ExceptionPusher.PushException;
         }
 
         public async Task Start(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll = true, string? webhook = default, int errorTimeout = 120)

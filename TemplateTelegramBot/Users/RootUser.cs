@@ -8,6 +8,7 @@ namespace TemplateTelegramBot.Users
 {
     public abstract class RootUser
     {
-        public long Id { get; set; }
+        public abstract long Id { get; set; }
+        public abstract int UserType { get; set; }
     }
 }
