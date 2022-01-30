@@ -28,7 +28,7 @@ namespace TestBot.Controller
             RootUser? rootUser = UsersStorage.GetUserData(userId);
             if(rootUser != null)
             {
-                var keyboard = BotKeyboard.StartKeyboard;
+                var keyboard = Keyboard.StartKeyboard;
                 switch (rootUser.UserType)
                 {
                     case (int)UserTypes.Types.User:

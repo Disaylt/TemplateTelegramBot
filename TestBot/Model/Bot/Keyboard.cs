@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestBot.Controller
 {
-    internal static class BotKeyboard
+    internal static class Keyboard
     {
         private static KeyboardButton[] _startKeyboadrButtons = new KeyboardButton[]
         {
