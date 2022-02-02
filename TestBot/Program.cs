@@ -1,9 +1,8 @@
-﻿UsersStorage.TypeMap = UserTypes.TypeMap;
-UsersStorage.PathToDirectoryUsersStorage = GlobalVariables.UserStorageDirectory;
-
+﻿string token = System.IO.File.ReadAllText($@"{GlobalVariables.ProjectDirectory}token.txt");
 
 MyLog myLog = new();
-TelegramBotInstaller botInstaller = new("5206803137:AAHqsMS72JsaDmxnJa3cIPMHsXgLjIR3cPo", myLog);
+UsersStorageSettings storageSettings = new UsersStorageSettings(GlobalVariables.UserStorageDirectory, UserTypes.TypeMap);
+TelegramBotInstaller botInstaller = new(token, myLog, storageSettings);
 ImplementedCommands implementedCommands = new ImplementedCommands();
 ImplementedActions implementedActions = new ImplementedActions();
 StandardAction standardAction = new StandardAction();

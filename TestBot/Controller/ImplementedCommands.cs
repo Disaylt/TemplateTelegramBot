@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.InputFiles;
 
 namespace TestBot.Controller
 {
@@ -19,6 +20,7 @@ namespace TestBot.Controller
             Commands.Add("WB", PressingButtonMarketplace);
             Commands.Add("/add_user", AddOrDeleteUser);
             Commands.Add("/del_user", AddOrDeleteUser);
+            Commands.Add("/get_excel", GetExcel);
         }
 
         private async Task StartBot(Update update, TelegramBotClient client)
@@ -88,6 +90,25 @@ namespace TestBot.Controller
             {
                 await client.SendTextMessageAsync(update.Message.Chat.Id, "У вас нет прав на данную команду.");
                 LastUsersActions.UpdateLastCommand(userId, "/start");
+            }
+        }
+
+        private async Task GetExcel(Update update, TelegramBotClient client)
+        {
+            try
+            {
+                string directoryExcel = @"C:\Users\Administrator\Desktop\bots\ItemIndexation\Keys\";
+                string[] files = Directory.GetFiles(directoryExcel, "*.xlsx");
+                foreach(string filePath in files)
+                {
+                    Stream stream = System.IO.File.OpenRead(filePath);
+                    InputOnlineFile inputOnlineFile = new InputOnlineFile(stream, Path.GetFileName(filePath));
+                    await client.SendDocumentAsync(update.Message.Chat.Id, inputOnlineFile);
+                }
+            }
+            catch 
+            {
+                Console.WriteLine("Неудалось отправить Excel");
             }
         }
 

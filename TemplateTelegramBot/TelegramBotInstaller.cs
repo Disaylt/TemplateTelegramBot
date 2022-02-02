@@ -12,12 +12,17 @@ namespace TemplateTelegramBot
         private readonly IExeptionLogger _exceptionPusher;
         private event IExeptionLogger.ExceptionPusherCallback pushException;
 
-        public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger)
+        public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger, UsersStorageSettings? usersStorageSettings = null)
         {
             _token = token;
             _exceptionPusher = exeptionLogger;
             pushException = _exceptionPusher.PushException;
             ConnectToUsersStorage(exeptionLogger);
+            if(usersStorageSettings != null)
+            {
+                UsersStorage.TypeMap = usersStorageSettings.UserTypeMap;
+                UsersStorage.PathToDirectoryUsersStorage = usersStorageSettings.PathToDirectoryUsersStorage;
+            }
         }
 
         private void ConnectToUsersStorage(IExeptionLogger exeptionLogger)

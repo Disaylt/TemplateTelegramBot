@@ -10,12 +10,12 @@ namespace TemplateTelegramBot.Users
     {
         private static string _fileName = "UsersStorage.json";
         private static string? _pathToDirectoryUsersStorage;
-        private static List<RootUser?>? _usersData;
+        private static List<RootUser>? _usersData;
 
         internal static IExeptionLogger? ExceptionPusher;
         internal static event IExeptionLogger.ExceptionPusherCallback? PushException;
-
-        public static string PathToDirectoryUsersStorage { 
+        internal static Dictionary<int, Type>? TypeMap { get; set; }
+        internal static string PathToDirectoryUsersStorage { 
             get 
             { 
                 if (_pathToDirectoryUsersStorage == null)
@@ -31,14 +31,13 @@ namespace TemplateTelegramBot.Users
             } 
         }
 
-        public static List<RootUser?>? UsersData
+        public static List<RootUser>? UsersData
         {
             get
             {
                 return _usersData;
             }
         }
-        public static Dictionary<int, Type>? TypeMap { get; set; }
 
         private static void SaveFile()
         {
@@ -67,15 +66,26 @@ namespace TemplateTelegramBot.Users
         private static void LoadUsersData(string pathToDirectoryUsersStorage)
         {
             string pathToFile = $@"{pathToDirectoryUsersStorage}\{_fileName}";
-            if(SysFile.Exists(pathToFile))
+            if(SysFile.Exists(pathToFile) && TypeMap != null)
             {
                 string content = SysFile.ReadAllText(pathToFile);
                 try
                 {
-                    _usersData = JToken
-                                .Parse(content)
-                                .Select(x => x.ToObject(TypeMap[x.Value<int>("UserType")]) as RootUser)
-                                .ToList();
+                    List<RootUser> usersData = new List<RootUser>();
+                    var usersToken = JToken.Parse(content);
+                    foreach(var userToken in usersToken)
+                    {
+                        int numUserType = userToken.Value<int>("UserType");
+                        if(TypeMap.ContainsKey(numUserType))
+                        {
+                            RootUser? rootUser = userToken.ToObject(TypeMap[numUserType]) as RootUser;
+                            if(rootUser != null)
+                            {
+                                usersData.Add(rootUser);
+                            }
+                        }
+                    }
+                    _usersData = usersData;
                 }
                 catch (Exception ex)
                 {
