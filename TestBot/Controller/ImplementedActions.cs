@@ -21,6 +21,8 @@ namespace TestBot.Controller
             Actions.Add("/add_user", AddUser);
         }
 
+        public event ExceptionPusherCallback? PushException;
+
         private async Task<string> SetArticle(Update update, TelegramBotClient client)
         {
             try

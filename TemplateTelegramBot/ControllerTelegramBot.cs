@@ -15,17 +15,20 @@ namespace TemplateTelegramBot
         private readonly int _timeout;
         private readonly bool _answerAll;
         private int _offset;
-        private event IExeptionLogger.ExceptionPusherCallback pushException;
+        private event ExceptionPusherCallback pushException;
 
-        internal ControllerTelegramBot(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll, TelegramBotClient client, IExeptionLogger exeptionLogger)
+        internal ControllerTelegramBot(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll, TelegramBotClient client)
         {
             _client = client;
             _timeout = 1000;
             _answerAll = answerAll;
-            pushException = exeptionLogger.PushException;
             _commands = implementedCommand.Commands ?? new Dictionary<string, IImplementedCommands.CommandUse>();
             _actions = implementedActions.Actions ?? new Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction>();
             _standardActions = standardActions;
+            if(GeneralExceptionsPusher.ExceptionPusher != null)
+            {
+                pushException = GeneralExceptionsPusher.ExceptionPusher.PushException;
+            }
         }
 
         private async Task UpdateHandling(Update update, long userId)
@@ -46,7 +49,7 @@ namespace TemplateTelegramBot
                 }
                 else
                 {
-                    await _standardActions.CommandNotFoundd(update, _client);
+                    await _standardActions.CommandNotFound(update, _client);
                 }
             }
         }

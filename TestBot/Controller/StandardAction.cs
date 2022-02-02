@@ -8,7 +8,9 @@ namespace TestBot.Controller
 {
     internal class StandardAction : IStandardActions
     {
-        public async Task CommandNotFoundd(Update update, TelegramBotClient client)
+        public event ExceptionPusherCallback? PushException;
+
+        public async Task CommandNotFound(Update update, TelegramBotClient client)
         {
             await client.SendTextMessageAsync(update.Message.Chat.Id, "Неизвестная команда");
         }

@@ -10,6 +10,9 @@ namespace TestBot.Controller
     internal class ImplementedCommands : IImplementedCommands
     {
         private string _accessDeniedMessage = "Отказанно в доступе";
+
+        public event ExceptionPusherCallback? PushException;
+
         public Dictionary<string, IImplementedCommands.CommandUse> Commands { get; }
 
         internal ImplementedCommands()

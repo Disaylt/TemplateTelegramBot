@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace TemplateTelegramBot
 {
+    public delegate void ExceptionPusherCallback(ExceptionData exceptionData);
     public class TelegramBotInstaller
     {
         private readonly string _token;
-        private readonly IExeptionLogger _exceptionPusher;
-        private event IExeptionLogger.ExceptionPusherCallback pushException;
+        private event ExceptionPusherCallback pushException;
 
         public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger, UsersStorageSettings? usersStorageSettings = null)
         {
             _token = token;
-            _exceptionPusher = exeptionLogger;
-            pushException = _exceptionPusher.PushException;
-            ConnectToUsersStorage(exeptionLogger);
+            GeneralExceptionsPusher.ExceptionPusher = exeptionLogger;
+            UsersStorage.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
+            pushException = GeneralExceptionsPusher.ExceptionPusher.PushException;
             if(usersStorageSettings != null)
             {
                 UsersStorage.TypeMap = usersStorageSettings.UserTypeMap;
@@ -25,22 +26,22 @@ namespace TemplateTelegramBot
             }
         }
 
-        private void ConnectToUsersStorage(IExeptionLogger exeptionLogger)
-        {
-            UsersStorage.ExceptionPusher = exeptionLogger;
-            UsersStorage.PushException += UsersStorage.ExceptionPusher.PushException;
-        }
-
         public async Task Start(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll = true, string? webhook = default, int errorTimeout = 120)
         {
             TelegramBotClient client;
+            if(GeneralExceptionsPusher.ExceptionPusher != null)
+            {
+                implementedCommand.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
+                implementedActions.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
+                standardActions.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
+            }
             while (true)
             {
                 try
                 {
                     client = new TelegramBotClient(_token);
                     await client.SetWebhookAsync(webhook ?? string.Empty);
-                    ControllerTelegramBot controllerTelegramBot = new(implementedCommand, implementedActions, standardActions, answerAll, client, _exceptionPusher);
+                    ControllerTelegramBot controllerTelegramBot = new(implementedCommand, implementedActions, standardActions, answerAll, client);
                     await controllerTelegramBot.Start();
 
                 }

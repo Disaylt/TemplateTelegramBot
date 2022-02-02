@@ -8,7 +8,6 @@ namespace TemplateTelegramBot.Log
 {
     public interface IExeptionLogger
     {
-        public delegate void ExceptionPusherCallback(ExceptionData exceptionData);
         public void PushException(ExceptionData exceptionData);
     }
 }

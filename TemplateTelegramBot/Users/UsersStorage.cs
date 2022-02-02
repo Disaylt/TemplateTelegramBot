@@ -12,8 +12,7 @@ namespace TemplateTelegramBot.Users
         private static string? _pathToDirectoryUsersStorage;
         private static List<RootUser>? _usersData;
 
-        internal static IExeptionLogger? ExceptionPusher;
-        internal static event IExeptionLogger.ExceptionPusherCallback? PushException;
+        internal static event ExceptionPusherCallback? PushException;
         internal static Dictionary<int, Type>? TypeMap { get; set; }
         internal static string PathToDirectoryUsersStorage { 
             get 
