@@ -8,6 +8,7 @@ namespace TemplateTelegramBot.Log
 {
     internal static class GeneralExceptionsPusher
     {
+        //chek
         internal static IExeptionLogger? ExceptionPusher { get; set; }
     }
 }

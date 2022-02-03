@@ -18,18 +18,23 @@ namespace TestBot.Controller
                 if (xLWorkbook.TryGetWorksheet(store, out IXLWorksheet xLWorksheet))
                 {
                     int numRowArticle = xLWorksheet
-                        .Column(2)?
+                        .Column(1)?
                         .CellsUsed()?
                         .Where(x => x.Value.ToString() == article)?
                         .FirstOrDefault()?
                         .Address
                         .RowNumber ?? 0;
-                    string firstPriceString = xLWorksheet.Cell(numRowArticle, 7).Value.ToString()?.Replace(',', '.') ?? string.Empty;
-                    string warehouseString = xLWorksheet.Cell(numRowArticle, 8).Value.ToString()?.Replace(',', '.') ?? string.Empty;
-                    string deliveryString = xLWorksheet.Cell(numRowArticle, 9).Value.ToString()?.Replace(',', '.') ?? string.Empty;
-                    string comissionString = xLWorksheet.Cell(numRowArticle, 10).Value.ToString()?.Replace(',', '.') ?? string.Empty;
-                    string logisticString = xLWorksheet.Cell(numRowArticle, 11).Value.ToString()?.Replace(',', '.') ?? string.Empty;
-                    string custopPercentString = xLWorksheet.Cell(10, 17).Value.ToString()?.Replace(',', '.') ?? string.Empty;
+                    string formulaCustopPercent = xLWorksheet
+                        .Cell(numRowArticle, 11)
+                        .FormulaA1
+                        .ToString() ?? string.Empty;
+                    int numRowCustopPercent = int.Parse(formulaCustopPercent.Substring(formulaCustopPercent.LastIndexOf('*') + 2));
+                    string firstPriceString = xLWorksheet.Cell(numRowArticle, 6).Value.ToString()?.Replace(',', '.') ?? "0";
+                    string warehouseString = xLWorksheet.Cell(numRowArticle, 7).Value.ToString()?.Replace(',', '.') ?? "0";
+                    string deliveryString = xLWorksheet.Cell(numRowArticle, 8).Value.ToString()?.Replace(',', '.') ?? "0";
+                    string comissionString = xLWorksheet.Cell(numRowArticle, 9).Value.ToString()?.Replace(',', '.') ?? "0";
+                    string logisticString = xLWorksheet.Cell(numRowArticle, 10).Value.ToString()?.Replace(',', '.') ?? "0";
+                    string custopPercentString = xLWorksheet.Cell(numRowCustopPercent, 16).Value.ToString()?.Replace(',', '.') ?? "0";
                     if (double.TryParse(firstPriceString, NumberStyles.Any, CultureInfo.InvariantCulture, out double firstPrice)
                         && double.TryParse(warehouseString, NumberStyles.Any, CultureInfo.InvariantCulture, out double warehouse)
                         && double.TryParse(deliveryString, NumberStyles.Any, CultureInfo.InvariantCulture, out double delivery)
@@ -44,7 +49,7 @@ namespace TestBot.Controller
                 }
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }
