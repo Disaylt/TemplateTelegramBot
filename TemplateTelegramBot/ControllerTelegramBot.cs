@@ -9,8 +9,8 @@ namespace TemplateTelegramBot
     internal class ControllerTelegramBot
     {
         private readonly TelegramBotClient _client;
-        private readonly Dictionary<string, IImplementedCommands.CommandUse> _commands;
-        private readonly Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction> _actions;
+        private readonly Dictionary<string, CommandUse> _commands;
+        private readonly Dictionary<string, ReturnNextActionAndUseAction> _actions;
         private readonly IStandardActions _standardActions;
         private readonly int _timeout;
         private readonly bool _answerAll;
@@ -22,8 +22,8 @@ namespace TemplateTelegramBot
             _client = client;
             _timeout = 1000;
             _answerAll = answerAll;
-            _commands = implementedCommand.Commands ?? new Dictionary<string, IImplementedCommands.CommandUse>();
-            _actions = implementedActions.Actions ?? new Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction>();
+            _commands = implementedCommand.Commands ?? new Dictionary<string, CommandUse>();
+            _actions = implementedActions.Actions ?? new Dictionary<string, ReturnNextActionAndUseAction>();
             _standardActions = standardActions;
             if(GeneralExceptionsPusher.ExceptionPusher != null)
             {

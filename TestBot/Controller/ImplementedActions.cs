@@ -9,11 +9,11 @@ namespace TestBot.Controller
 {
     public class ImplementedActions : IImplementedActions
     {
-        public Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction> Actions { get; }
+        public Dictionary<string, ReturnNextActionAndUseAction> Actions { get; }
 
         public ImplementedActions()
         {
-            Actions = new Dictionary<string, IImplementedActions.ReturnNextActionAndUseAction>();
+            Actions = new Dictionary<string, ReturnNextActionAndUseAction>();
             Actions.Add("OZON", SetArticle);
             Actions.Add("WB", SetArticle);
             Actions.Add("/get_roi", SendROI);

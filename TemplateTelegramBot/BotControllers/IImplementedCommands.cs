@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot.BotControllers
 {
+    public delegate Task CommandUse(Update update, TelegramBotClient client);
     public interface IImplementedCommands
     {
         public event ExceptionPusherCallback? PushException;
-        public delegate Task CommandUse(Update update, TelegramBotClient client);
         public Dictionary<string, CommandUse>? Commands { get; }
     }
 }

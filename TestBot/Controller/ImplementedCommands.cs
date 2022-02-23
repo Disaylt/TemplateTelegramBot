@@ -13,11 +13,11 @@ namespace TestBot.Controller
 
         public event ExceptionPusherCallback? PushException;
 
-        public Dictionary<string, IImplementedCommands.CommandUse> Commands { get; }
+        public Dictionary<string, CommandUse> Commands { get; }
 
         internal ImplementedCommands()
         {
-            Commands = new Dictionary<string, IImplementedCommands.CommandUse>();
+            Commands = new Dictionary<string, CommandUse>();
             Commands.Add("/start", StartBot);
             Commands.Add("OZON", PressingButtonMarketplace);
             Commands.Add("WB", PressingButtonMarketplace);

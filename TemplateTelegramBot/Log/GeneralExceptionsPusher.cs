@@ -12,3 +12,4 @@ namespace TemplateTelegramBot.Log
         internal static IExeptionLogger? ExceptionPusher { get; set; }
     }
 }
+

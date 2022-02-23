@@ -6,4 +6,4 @@ TelegramBotInstaller botInstaller = new(token, myLog, storageSettings);
 ImplementedCommands implementedCommands = new ImplementedCommands();
 ImplementedActions implementedActions = new ImplementedActions();
 StandardAction standardAction = new StandardAction();
-await botInstaller.Start(implementedCommands, implementedActions, standardAction, true);
+await botInstaller.Start(implementedCommands, implementedActions, standardAction, false);
