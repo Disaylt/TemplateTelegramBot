@@ -21,7 +21,7 @@ namespace TemplateTelegramBot
             }
         }
 
-        public static void UpdateLastCommand(long id, string action)
+        public static void UpdateLastAction(long id, string action)
         {
             if(lastUsersCommand.ContainsKey(id))
             {
@@ -33,7 +33,7 @@ namespace TemplateTelegramBot
             }
         }
 
-        public static string GetLastCommand(long id)
+        public static string GetLastAction(long id)
         {
             if (lastUsersCommand.ContainsKey(id))
             {
