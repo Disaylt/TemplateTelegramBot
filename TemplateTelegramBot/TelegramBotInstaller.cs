@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot
 {
-    public delegate void ExceptionPusherCallback(ExceptionData exceptionData);
+    public delegate void ExceptionPusherCallback(Exception exceptionData);
     public class TelegramBotInstaller
     {
         private readonly string _token;
@@ -29,12 +29,6 @@ namespace TemplateTelegramBot
         public async Task Start(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll = true, string? webhook = default, int errorTimeout = 120)
         {
             TelegramBotClient client;
-            if(GeneralExceptionsPusher.ExceptionPusher != null)
-            {
-                implementedCommand.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
-                implementedActions.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
-                standardActions.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
-            }
             while (true)
             {
                 try
@@ -47,14 +41,7 @@ namespace TemplateTelegramBot
                 }
                 catch (Exception ex)
                 {
-                    ExceptionData exceptionData = new()
-                    {
-                        CurrentMethod = ex.TargetSite?.Name,
-                        DateTime = DateTime.Now,
-                        Message = ex.Message,
-                        StackTrace = ex.StackTrace
-                    };
-                    pushException.Invoke(exceptionData);
+                    pushException.Invoke(ex);
                 }
                 finally
                 {

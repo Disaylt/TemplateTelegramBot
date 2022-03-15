@@ -15,7 +15,7 @@ namespace TemplateTelegramBot
         private readonly int _timeout;
         private readonly bool _answerAll;
         private int _offset;
-        private event ExceptionPusherCallback pushException;
+        private event ExceptionPusherCallback? pushException;
 
         internal ControllerTelegramBot(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll, TelegramBotClient client)
         {
@@ -59,7 +59,7 @@ namespace TemplateTelegramBot
             foreach (var update in updates)
             {
                 long userId = update.Message?.Chat.Id ?? default;
-                if (_answerAll || UsersStorage.UsersData.Find(x=> x.Id == userId) != null)
+                if (_answerAll || UsersStorage.UsersData?.Find(x=> x.Id == userId) != null)
                 {
                     await UpdateHandling(update, userId);
                 }
@@ -83,14 +83,7 @@ namespace TemplateTelegramBot
             }
             catch (Exception ex)
             {
-                ExceptionData exceptionData = new()
-                {
-                    CurrentMethod = ex.TargetSite?.Name,
-                    DateTime = DateTime.Now,
-                    Message = ex.Message,
-                    StackTrace = ex.StackTrace
-                };
-                pushException.Invoke(exceptionData);
+                pushException?.Invoke(ex);
             }
         }
     }
