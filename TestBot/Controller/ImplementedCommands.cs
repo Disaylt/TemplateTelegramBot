@@ -87,12 +87,12 @@ namespace TestBot.Controller
             {
                 await client.SendTextMessageAsync(update.Message.Chat.Id, "Введите Id пользователя.");
                 string command = update?.Message?.Text ?? "/start";
-                LastUsersActions.UpdateLastCommand(userId, command);
+                LastUsersActions.UpdateLastAction(userId, command);
             }
             else
             {
                 await client.SendTextMessageAsync(update.Message.Chat.Id, "У вас нет прав на данную команду.");
-                LastUsersActions.UpdateLastCommand(userId, "/start");
+                LastUsersActions.UpdateLastAction(userId, "/start");
             }
         }
 

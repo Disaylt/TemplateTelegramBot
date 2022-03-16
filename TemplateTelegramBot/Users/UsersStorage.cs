@@ -8,7 +8,7 @@ namespace TemplateTelegramBot.Users
 {
     public static class UsersStorage
     {
-        private static string _fileName = "UsersStorage.json";
+        private const string _fileName = "UsersStorage.json";
         private static string? _pathToDirectoryUsersStorage;
         private static List<RootUser>? _usersData;
 
@@ -25,7 +25,7 @@ namespace TemplateTelegramBot.Users
             }
             set 
             {
-                LoadUsersData(value);
+                LoadUsersStorage(value);
                 _pathToDirectoryUsersStorage = value;
             } 
         }
@@ -46,73 +46,43 @@ namespace TemplateTelegramBot.Users
                 string content = JsonConvert.SerializeObject(UsersData);
                 SysFile.WriteAllText(pathToFile, content);
             }
-            else
-            {
-                ExceptionData exceptionData = new()
-                {
-                    CurrentMethod = nameof(LoadUsersData),
-                    DateTime = DateTime.Now,
-                    Message = $"Не найден файл по пути {pathToFile}, либо данные с пользователями пусты.",
-                    StackTrace = string.Empty
-                };
-                if (PushException != null)
-                {
-                    PushException.Invoke(exceptionData);
-                }
-            }
         }
 
-        private static void LoadUsersData(string pathToDirectoryUsersStorage)
+        private static List<RootUser> LoadUsers(JToken usersToken)
+        {
+            List<RootUser> usersData = new();
+            foreach (var userToken in usersToken)
+            {
+                int numUserType = userToken.Value<int>("UserType");
+                if (TypeMap != null && TypeMap.ContainsKey(numUserType))
+                {
+                    if (userToken.ToObject(TypeMap[numUserType]) is RootUser rootUser)
+                    {
+                        usersData.Add(rootUser);
+                    }
+                }
+            }
+            return usersData;
+        }
+
+        private static void LoadUsersStorage(string pathToDirectoryUsersStorage)
         {
             string pathToFile = $@"{pathToDirectoryUsersStorage}\{_fileName}";
-            if(SysFile.Exists(pathToFile) && TypeMap != null)
+            if(SysFile.Exists(pathToFile))
             {
                 string content = SysFile.ReadAllText(pathToFile);
                 try
                 {
-                    List<RootUser> usersData = new List<RootUser>();
                     var usersToken = JToken.Parse(content);
-                    foreach(var userToken in usersToken)
-                    {
-                        int numUserType = userToken.Value<int>("UserType");
-                        if(TypeMap.ContainsKey(numUserType))
-                        {
-                            RootUser? rootUser = userToken.ToObject(TypeMap[numUserType]) as RootUser;
-                            if(rootUser != null)
-                            {
-                                usersData.Add(rootUser);
-                            }
-                        }
-                    }
-                    _usersData = usersData;
+                    var userStorage = LoadUsers(usersToken);
+                    _usersData = userStorage;
                 }
                 catch (Exception ex)
                 {
-                    ExceptionData exceptionData = new()
-                    {
-                        CurrentMethod = ex.TargetSite?.Name,
-                        DateTime = DateTime.Now,
-                        Message = ex.Message,
-                        StackTrace = ex.StackTrace
-                    };
                     if(PushException != null)
                     {
-                        PushException.Invoke(exceptionData);
+                        PushException.Invoke(ex);
                     }
-                }
-            }
-            else
-            {
-                ExceptionData exceptionData = new()
-                {
-                    CurrentMethod = nameof(LoadUsersData),
-                    DateTime = DateTime.Now,
-                    Message = $"Не найден файл по пути {pathToFile}",
-                    StackTrace = string.Empty
-                };
-                if (PushException != null)
-                {
-                    PushException.Invoke(exceptionData);
                 }
             }
         }
@@ -156,7 +126,7 @@ namespace TemplateTelegramBot.Users
 
         public static RootUser? GetUserData(long userId)
         {
-            RootUser? userData = UsersData
+            RootUser? userData = UsersData?
                 .Where(x => x.Id == userId)
                 .FirstOrDefault();
             return userData;
