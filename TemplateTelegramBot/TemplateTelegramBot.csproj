@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SQliteCommandExecuter">
+      <HintPath>Lib\SQliteCommandExecuter.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
