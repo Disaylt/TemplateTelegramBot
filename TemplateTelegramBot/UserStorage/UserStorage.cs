@@ -13,10 +13,12 @@ namespace TemplateTelegramBot.UserStorage
         private const string _dbName = "UserStorage";
         private const string _usersTableName = "Users";
         private readonly SqlTemplateCommandExecuter _commandExecuter;
+        private readonly UserStorageContext _userStorageContext;
 
         public UserStorage()
         {
             _commandExecuter = new SqlTemplateCommandExecuter(_dbName);
+            _userStorageContext = new UserStorageContext(_dbName, _usersTableName);
             CreateDatabaseIfNotExcists();
         }
 
@@ -41,11 +43,27 @@ namespace TemplateTelegramBot.UserStorage
             }
         }
 
-        public void Delete(long chatId)
+        public virtual void Delete(long chatId)
         {
             var parameter = new SqliteParameter("ChatId", chatId);
             var parameters = new List<SqliteParameter> { parameter };
             _commandExecuter.Delete(_usersTableName, parameters);
+        }
+
+        public virtual void AddUser(RootUser rootUser)
+        {
+            List<SqliteParameter> parameters = new List<SqliteParameter>
+            {
+                new SqliteParameter("UserName", rootUser.Name),
+                new SqliteParameter("ChatId", rootUser.Id),
+                new SqliteParameter("UserTypeId", rootUser.UserType)
+            };
+            _commandExecuter.Insert(_usersTableName, parameters);
+        }
+
+        public virtual RootUser GetUser(long chatId)
+        {
+            var rootUsers = _userStorageContext.RootUsers.
         }
 
     }
