@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SQliteCommandExecuter;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace TemplateTelegramBot.UserStorage
 {
@@ -61,9 +62,13 @@ namespace TemplateTelegramBot.UserStorage
             _commandExecuter.Insert(_usersTableName, parameters);
         }
 
-        public virtual RootUser GetUser(long chatId)
+        public virtual RootUser? GetUser(long chatId)
         {
-            var rootUsers = _userStorageContext.RootUsers.
+            string[] whereParameters = { "ChatId" };
+            string command = SqlCommandTextCreator.GetSelectCommand(_usersTableName, whereParameters);
+            SqliteParameter sqliteParameter = new SqliteParameter("@ChatId", chatId);
+            var rootUsers = _userStorageContext.RootUsers?.FromSqlRaw(command, sqliteParameter).FirstOrDefault();
+            return rootUsers;
         }
 
     }
