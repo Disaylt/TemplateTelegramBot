@@ -13,17 +13,11 @@ namespace TemplateTelegramBot
         private readonly string _token;
         private event ExceptionPusherCallback pushException;
 
-        public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger, UsersStorageSettings? usersStorageSettings = null)
+        public TelegramBotInstaller(string token, IExeptionLogger exeptionLogger)
         {
             _token = token;
             GeneralExceptionsPusher.ExceptionPusher = exeptionLogger;
-            UsersStorage.PushException += GeneralExceptionsPusher.ExceptionPusher.PushException;
-            pushException = GeneralExceptionsPusher.ExceptionPusher.PushException;
-            if(usersStorageSettings != null)
-            {
-                UsersStorage.TypeMap = usersStorageSettings.UserTypeMap;
-                UsersStorage.PathToDirectoryUsersStorage = usersStorageSettings.PathToDirectoryUsersStorage;
-            }
+            pushException = exeptionLogger.PushException;
         }
 
         public async Task Start(IImplementedCommands implementedCommand, IImplementedActions implementedActions, IStandardActions standardActions, bool answerAll = true, string? webhook = default, int errorTimeout = 120)

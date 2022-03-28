@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot.Users
 {
+    [Obsolete("This space is obsolet. Use namespace TemplateTelegramBot.UserStorage")]
     public class UsersStorageSettings
     {
         internal readonly string PathToDirectoryUsersStorage;
@@ -16,5 +17,7 @@ namespace TemplateTelegramBot.Users
             PathToDirectoryUsersStorage = pathToDirectoryUsersStorage;
             UserTypeMap = userTypeMap;
         }
+
+
     }
 }
