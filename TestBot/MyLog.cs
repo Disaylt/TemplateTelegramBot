@@ -8,11 +8,12 @@ namespace TestBot
 {
     internal class MyLog : IExeptionLogger
     {
-        public void PushException(ExceptionData exceptionData)
+
+        public void PushException(Exception exceptionData)
         {
             Console.WriteLine("------------------");
-            Console.WriteLine($"DateTime: {exceptionData.DateTime}");
-            Console.WriteLine($"Method: {exceptionData.CurrentMethod}");
+            Console.WriteLine($"DateTime: {DateTime.Now}");
+            Console.WriteLine($"Method: {exceptionData.TargetSite}");
             Console.WriteLine($"ErrorMessage: {exceptionData.Message}");
             Console.WriteLine($"StackTrace: {exceptionData.StackTrace}");
         }

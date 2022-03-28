@@ -53,11 +53,11 @@ namespace TemplateTelegramBot.UserStorage
 
         public virtual void AddUser(RootUser rootUser)
         {
-            List<SqliteParameter> parameters = new List<SqliteParameter>
+            List<SqliteParameter> parameters = new()
             {
-                new SqliteParameter("UserName", rootUser.Name),
-                new SqliteParameter("ChatId", rootUser.Id),
-                new SqliteParameter("UserTypeId", rootUser.UserType)
+                new SqliteParameter("UserName", rootUser.UserName),
+                new SqliteParameter("ChatId", rootUser.ChatId),
+                new SqliteParameter("UserTypeId", rootUser.UserTypeId)
             };
             _commandExecuter.Insert(_usersTableName, parameters);
         }
@@ -66,7 +66,7 @@ namespace TemplateTelegramBot.UserStorage
         {
             string[] whereParameters = { "ChatId" };
             string command = SqlCommandTextCreator.GetSelectCommand(_usersTableName, whereParameters);
-            SqliteParameter sqliteParameter = new SqliteParameter("@ChatId", chatId);
+            SqliteParameter sqliteParameter = new("@ChatId", chatId);
             var rootUsers = _userStorageContext.RootUsers?.FromSqlRaw(command, sqliteParameter).FirstOrDefault();
             return rootUsers;
         }

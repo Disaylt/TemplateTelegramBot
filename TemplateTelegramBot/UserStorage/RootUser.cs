@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace TemplateTelegramBot.UserStorage
 {
-    public abstract class RootUser
+    [Keyless]
+    public class RootUser
     {
-        public abstract string Name { get; }
-        public abstract long Id { get; set; }
-        public abstract int UserType { get; set; }
-        
+        public string? UserName { get; set; }
+        public long ChatId { get; set; }
+        public int UserTypeId { get; set; }
     }
 }
