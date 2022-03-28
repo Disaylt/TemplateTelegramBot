@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TemplateTelegramBot.Users
 {
-    [Obsolete("This space is obsolet. Use UserStorage")]
+    [Obsolete("This space is obsolet. Use namespace TemplateTelegramBot.UserStorage")]
     public static class UsersStorage
     {
         private const string _fileName = "UsersStorage.json";
