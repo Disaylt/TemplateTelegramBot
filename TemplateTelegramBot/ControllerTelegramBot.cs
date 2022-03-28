@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TemplateTelegramBot.UserStorage;
 
 namespace TemplateTelegramBot
 {
     internal class ControllerTelegramBot
     {
+        private readonly UserStorageHandler _userStorage;
         private readonly TelegramBotClient _client;
         private readonly Dictionary<string, CommandUse> _commands;
         private readonly Dictionary<string, ReturnNextActionAndUseAction> _actions;
@@ -27,7 +29,12 @@ namespace TemplateTelegramBot
             _standardActions = standardActions;
             if(GeneralExceptionsPusher.ExceptionPusher != null)
             {
+                _userStorage = new UserStorageHandler(GeneralExceptionsPusher.ExceptionPusher.PushException);
                 pushException = GeneralExceptionsPusher.ExceptionPusher.PushException;
+            }
+            else
+            {
+                _userStorage = new UserStorageHandler();
             }
         }
 
@@ -59,7 +66,7 @@ namespace TemplateTelegramBot
             foreach (var update in updates)
             {
                 long userId = update.Message?.Chat.Id ?? default;
-                if (_answerAll || UsersStorage.UsersData?.Find(x=> x.Id == userId) != null)
+                if (_answerAll || _userStorage.GetUser(userId) != null)
                 {
                     await UpdateHandling(update, userId);
                 }
