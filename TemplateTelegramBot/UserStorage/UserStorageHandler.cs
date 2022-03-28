@@ -98,5 +98,20 @@ namespace TemplateTelegramBot.UserStorage
                 return null;
             }
         }
+
+        public virtual List<RootUser>? GetUsers()
+        {
+            try
+            {
+                string command = SqlCommandTextCreator.GetSelectCommand(_usersTableName);
+                var rootUsers = _userStorageContext.RootUsers?.FromSqlRaw(command).ToList();
+                return rootUsers;
+            }
+            catch (Exception ex)
+            {
+                PushException?.Invoke(ex);
+                return null;
+            }
+        }
     }
 }
