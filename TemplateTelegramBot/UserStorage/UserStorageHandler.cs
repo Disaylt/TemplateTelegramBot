@@ -115,5 +115,18 @@ namespace TemplateTelegramBot.UserStorage
                 return null;
             }
         }
+
+        public virtual void UpdateUser(SqliteParameter updateParameter, List<SqliteParameter> whereParameters)
+        {
+            List<SqliteParameter> updateParameters = new List<SqliteParameter> { updateParameter };
+            try
+            {
+                _commandExecuter.Update(_usersTableName, updateParameters, whereParameters);
+            }
+            catch (Exception exception)
+            {
+                PushException?.Invoke(exception);
+            }
+        }
     }
 }
