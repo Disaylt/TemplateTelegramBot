@@ -13,5 +13,6 @@ namespace TemplateTelegramBot.UserStorage
         public string? UserName { get; set; }
         public long ChatId { get; set; }
         public int UserTypeId { get; set; }
+        public int IsActive { get; set; }
     }
 }
