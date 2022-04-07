@@ -36,7 +36,8 @@ namespace TemplateTelegramBot.UserStorage
                     "Id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE",
                     "ChatId INTEGER NOT NULL",
                     "UserName TEXT",
-                    "UserTypeId INTEGER"
+                    "UserTypeId INTEGER",
+                    "IsActive INTEGER NOT NULL"
                 };
             _commandExecuter.CrateTable(_usersTableName, standardUsersTableColumns);
         }
@@ -72,7 +73,8 @@ namespace TemplateTelegramBot.UserStorage
                 {
                     new SqliteParameter("UserName", rootUser.UserName),
                     new SqliteParameter("ChatId", rootUser.ChatId),
-                    new SqliteParameter("UserTypeId", rootUser.UserTypeId)
+                    new SqliteParameter("UserTypeId", rootUser.UserTypeId),
+                    new SqliteParameter("IsActive", rootUser.IsActive)
                 };
                 _commandExecuter.Insert(_usersTableName, parameters);
             }
@@ -111,6 +113,19 @@ namespace TemplateTelegramBot.UserStorage
             {
                 PushException?.Invoke(ex);
                 return null;
+            }
+        }
+
+        public virtual void UpdateUser(SqliteParameter updateParameter, List<SqliteParameter> whereParameters)
+        {
+            List<SqliteParameter> updateParameters = new List<SqliteParameter> { updateParameter };
+            try
+            {
+                _commandExecuter.Update(_usersTableName, updateParameters, whereParameters);
+            }
+            catch (Exception exception)
+            {
+                PushException?.Invoke(exception);
             }
         }
     }
